@@ -12,25 +12,13 @@ backMirror.controlUi.prototype = {
     },
 
     _setElement : function(){
-        $('body').append('<div id="backMirrorWrap"><div id="backMirror"><img src=""></div><div id="backMirrorControl"></div></div>');
-        $('#backMirrorControl').html(
-            '<input type="file" accept="image/jpeg, image/png, image/gif" id="file_upload"><br>' +
-            '<span class="title"><label for="width">width : </label></span><input type="number" id="width"> px <br>' +
-            '<span class="title"><label for="height">height : </label></span><input type="text" id="height" value="auto" disabled="disabled"> px <br>' +
-            '<span class="title"><label for="top">top : </label></span><input type="number" id="top"> px <br>' +
-            '<span class="title"><label for="left">left : </label></span><input type="number" id="left"> px <br>' +
-            '<span class="title"><label for="opacity">opacity : </label></span><input type="range" id="opacity"> <br>' +
-            '<span class="title">display : </span> <br>' +
-            '<input type="checkbox" id="block_none"><label for="block_none">block/none</label> <br>'
-        );
-
-        this.elFileUpload = $('#backMirrorControl #file_upload');
-        this.elMirror = $('#backMirror');
-        this.elWidth = $('#backMirrorControl #width');
-        this.elTop = $('#backMirrorControl #top');
-        this.elLeft = $('#backMirrorControl #left');
-        this.elOpacity = $('#backMirrorControl #opacity');
-        this.elBlockNone = $('#backMirrorControl #block_none');
+        this.elFileUpload = $('#controlBM #file_upload');
+        this.elMirror = $('#BM');
+        this.elWidth = $('#controlBM #width');
+        this.elTop = $('#controlBM #top');
+        this.elLeft = $('#controlBM #left');
+        this.elOpacity = $('#controlBM #opacity');
+        this.elBlockNone = $('#controlBM #block_none');
     },
 
     _setValue : function(){
@@ -47,10 +35,11 @@ backMirror.controlUi.prototype = {
     },
 
     _setPreview : function(preview){
+        var oThis = this;
         if(preview.files && preview.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e){
-                $('#backMirror img').attr('src', e.target.result);
+                oThis.elMirror.find('img').attr('src', e.target.result);
             }
             reader.readAsDataURL(preview.files[0]);
         }
@@ -107,3 +96,32 @@ backMirror.controlUi.prototype = {
         });
     }
 };
+
+var elAdd = '';
+var elControls = '';
+var elCreateDiv = document.createElement('div');
+var elCreateImg = document.createElement('img');
+var elBackMirror = '<div id="BM"></div>';
+var elControl = '<div id="controlBM"></div>';
+
+// NOTE create <div id="backMirrorWrap">
+document.body.appendChild(elCreateDiv).setAttribute('id', 'backMirrorWrap');
+
+// NOTE <div id="backMirrorWrap"> innerHTML <div id="BM">, <div id="controlBM">
+elAdd += elBackMirror + elControl;
+document.getElementById('backMirrorWrap').innerHTML = elAdd;
+
+// NOTE <div id="BM"> innerHTML <img src>
+document.getElementById('BM').appendChild(elCreateImg).setAttribute('src', '');
+
+// NOTE inner controls
+elControls += '<input type="file" accept="image/jpeg, image/png, image/gif" id="file_upload" class="form-control">';
+elControls += '<span class="title"><label for="width">width (pixel)</label></span><input type="number" id="width" class="form-control">';
+elControls += '<span class="title"><label for="height">height (pixel)</label></span><input type="text" id="height" class="form-control" value="auto" disabled="disabled">';
+elControls += '<span class="title"><label for="top">top (pixel)</label></span><input type="number" id="top" class="form-control">';
+elControls += '<span class="title"><label for="left">left (pixel)</label></span><input type="number" id="left" class="form-control">';
+elControls += '<span class="title"><label for="opacity">opacity</label></span><input type="range" id="opacity">';
+elControls += '<span class="title"><label for="block_none">block/none</label> </span><input type="checkbox" id="block_none">';
+document.getElementById('controlBM').innerHTML = elControls;
+
+var oBackMirror = new backMirror.controlUi();
